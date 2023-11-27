@@ -1,0 +1,208 @@
+Exo1:
+
+	1)
+		show * from personnages
+
+		show * from personnages
+
+		select nom,levelMin from arme;
+
+		select nom,surnom,level from personnage;
+
+		select nom as Pseudo,level as Niveau from personnage;
+
+		select libelle as 'Types armes du jeu' from typearme;
+
+
+	2)
+		select count(idArme) from arme;
+
+		select count(idPersonnage) as "Nombre de personnage" from personnage;
+
+		select avg(level) as "Moyenne de niveau" from personnage;
+
+		select sum(baseForce) as "Points de force", sum(baseAgi) as "Points d'agilité", sum(baseIntel) as "Points d'intelligence" from classe;
+
+		select min(levelMin), max(levelMin) from arme;
+
+		select nom,(baseForce+baseAgi+baseIntel) as "NB points de caractéristiques" from classe;
+
+	3)
+		select concat(nom,surnom) as "Personnage" from personnage;
+
+		select concat(nom, "-F : ",  baseForce, "-A : ", baseAgi, "-I : ", baseIntel) as Classe from classe;
+
+		select substring(nom, 1, 6) from personnage;
+
+		select concat(substring(nom, 1, 5), "-", substring(description, 1, 20)) as Classe from classe;
+
+	4)
+		select * from arme where levelMin > 5;
+		
+		select * from arme where degat<25;
+
+		select nom, surnom from personnage where level=10;
+
+		select * from typearme where estDistance=1;
+
+	5)
+		select * from arme where levelMin between 4 and 8;
+
+		select * from personnage where idPersonnage<=3 and level=10;
+
+		select * from arme where levelMin<=4 or levelMin>=8;
+
+		select * from arme where idArme<=2 or degat>=30;
+
+		select * from arme where idArme<=2 or degat between 25 and 40;
+
+		select * from personnage where level!=8 and level>7 or level<6;
+
+		select count(idPersonnage) as "NB Perso < 10" from personnage where level!=10;
+
+		select avg(degat) as "Moyenne dégat" from arme where levelMin between 3 and 7;
+
+	6)
+		select * from personnage where nom like "l%";
+
+		select * from personnage where nom like "l%" and nom like "%er";
+
+		select * from arme where nom like "%bois%";
+
+		select * from arme where nom like "a%" and nom like "__b%";
+
+		select * from arme where idArme!=3 and idArme!=6 limit 5;
+
+		select * from personnage where idPersonnage!=1 and idPersonnage!=5 and idPersonnage<=6 and level like "10";
+
+		select * from personnage where surnom is not null;
+
+		select * from personnage where surnom is null;
+
+		select * from personnage limit 3;
+
+		select * from personnage limit 3, 2;
+
+
+
+Exo2:
+
+	1)
+		select * from personnage inner join classe on personnage.idClasse=classe.idClasse;
+
+		select nom, levelMin, degat, libelle, estDistance from arme inner join typearme on arme.idTypeArme=typearme.idTypeArme;
+
+	2)
+		select personnage.nom, classe.nom from personnage inner join classe on personnage.idClasse=classe.idClasse;
+
+		select personnage.nom, arme.nom, levelMin, degat from personnage inner join arme on personnage.idArmeUtilise=arme.idArme;
+
+		select personnage.nom, arme.nom, levelMin, degat, libelle as "Type arme", estDistance from personnage inner join arme on personnage.idArmeUtilise=arme.idArme inner join typearme on arme.idTypeArme=typearme.idTypeArme;
+
+	3)
+		select personnage.nom as "Nom personnage", level, arme.nom as "Arme", levelMin from personnage inner join dispose on personnage.idPersonnage=dispose.idPersonnage inner join arme on arme.idArme=dispose.idArme;
+
+		select nom, levelMin, degat, libelle as Type from arme inner join typearme on arme.idTypeArme=typearme.idTypeArme where estDistance=0;
+
+		select personnage.nom, arme.nom, libelle from personnage inner join arme on personnage.idArmeUtilise=arme.idArme inner join typearme on arme.idTypeArme=typearme.idTypeArme inner join classe on personnage.idClasse=classe.idClasse where classe.nom like "Guerrier";
+
+	4)
+		select personnage.idPersonnage, personnage.nom as perso, arme.nom as Arme, libelle as Type from personnage inner join dispose on personnage.idPersonnage=dispose.idPersonnage inner join arme on arme.idArme=dispose.idArme inner join typearme on arme.idTypeArme=typearme.idTypeArme where level=10;
+
+		select personnage.idPersonnage, personnage.nom as perso, arme.nom as Arme, libelle as Type from personnage inner join dispose on personnage.idPersonnage=dispose.idPersonnage inner join arme on arme.idArme=dispose.idArme inner join typearme on arme.idTypeArme=typearme.idTypeArme where level=10 order by idPersonnage;
+
+		select avg(degat) as "Moyenne de dégats des armes à distance" from arme inner join typearme on arme.idTypeArme=typearme.idTypeArme where estDistance=1;
+
+		select distinct personnage.nom as nom from arme inner join typearme on arme.idTypeArme=typearme.idTypeArme inner join dispose on dispose.idArme=arme.idArme inner join personnage on personnage.idPersonnage=dispose.idPersonnage where substring(libelle, 1, 1) like "a";
+
+	5)
+		select libelle as Type, nom as Arme from typearme left join arme on typearme.idTypeArme=arme.idTypeArme;
+
+		select libelle as Type, nom as Arme from arme right join typearme on typearme.idTypeArme=arme.idTypeArme;
+
+		select arme.*, personnage.*, personnage.idClasse from arme left join personnage on arme.idArme=personnage.idArmeUtilise order by levelMin;
+
+		select arme.idArme, arme.nom as Nom, personnage.nom as Personnage from personnage right join dispose on personnage.idpersonnage=dispose.idPersonnage right join arme on dispose.idArme=arme.idArme order by idArme;
+
+
+Exo3:
+
+	1)
+		CREATE TABLE attaque(
+  		 idAttaque int,
+  		 nom varchar(60),
+  		 baseDegat int,
+  		 test TINYINT
+		);
+
+		alter table attaque modify test varchar(50);
+
+		alter table attaque change test toto int;
+		
+		alter table attaque drop toto;
+
+		CREATE TABLE utilise(
+  		 idAttaque int,
+  		 idPersonnage int,
+  		 levelAttaque int
+		);
+
+	2)
+		INSERT INTO `attaque` (`idAttaque`, `nom`, `baseDegat`) VALUES
+		(1, 'attaque1', 5),
+		(2, 'attaque2', 10),
+		(3, 'attaque3', 15),
+		(4, 'attaque4', 20);
+
+		INSERT INTO `utilise` (`idAttaque`, `idPersonnage`, `levelAttaque`) VALUES
+		(1, 1, 2),
+		(2, 1, 2),
+		(2, 2, 1),
+		(4, 3, 2),
+		(1, 4, 3),
+		(4, 5, 3);
+
+		update attaque set basedegat=10;
+
+		update attaque set basedegat=50 where idAttaque=2 or idAttaque=3;
+
+		alter table personnage add dateNaissance varchar(10); 
+
+		update personnage set dateNaissance="2001-01-01" where idPersonnage=1;
+
+		update personnage set dateNaissance="2001-02-01" where idPersonnage=2; 
+
+		update personnage set dateNaissance="2001-03-01" where idPersonnage=3; 
+
+		update personnage set dateNaissance="2002-03-01" where idPersonnage=3; 
+
+		update personnage set dateNaissance="2003-06-01" where idPersonnage=4; 
+
+		update personnage set dateNaissance="2001-04-01" where idPersonnage=5; 
+
+		update personnage set dateNaissance="2007-02-01" where idPersonnage=6; 
+
+		update personnage set dateNaissance="2003-05-01" where idPersonnage=7; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
