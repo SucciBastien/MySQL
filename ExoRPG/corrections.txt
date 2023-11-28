@@ -1,17 +1,17 @@
 Exo1:
 
 	1)
-		show * from personnages
+		select * from personnages;
 
-		show * from personnages
+		select * from arme;
 
-		select nom,levelMin from arme;
+		select nom, levelMin from arme;
 
-		select nom,surnom,level from personnage;
+		select nom, surnom, level from personnage;
 
-		select nom as Pseudo,level as Niveau from personnage;
+		select nom as Pseudo, level as Niveau from personnage;
 
-		select libelle as 'Types armes du jeu' from typearme;
+		select libelle as "Types armes du jeu" from typearme;
 
 
 	2)
@@ -37,7 +37,7 @@ Exo1:
 		select concat(substring(nom, 1, 5), "-", substring(description, 1, 20)) as Classe from classe;
 
 	4)
-		select * from arme where levelMin > 5;
+		select * from arme where levelMin>5;
 		
 		select * from arme where degat<25;
 
@@ -65,15 +65,15 @@ Exo1:
 	6)
 		select * from personnage where nom like "l%";
 
-		select * from personnage where nom like "l%" and nom like "%er";
+		select * from personnage where nom like "l%er"
 
 		select * from arme where nom like "%bois%";
 
-		select * from arme where nom like "a%" and nom like "__b%";
+		select * from arme where nom like "a_b%";
 
-		select * from arme where idArme!=3 and idArme!=6 limit 5;
+		select * from arme where idArme in (1,2,4,5,7);
 
-		select * from personnage where idPersonnage!=1 and idPersonnage!=5 and idPersonnage<=6 and level like "10";
+		select * from personnage where idPersonnage in (2,3,4,6) and level like "10";
 
 		select * from personnage where surnom is not null;
 
@@ -82,8 +82,6 @@ Exo1:
 		select * from personnage limit 3;
 
 		select * from personnage limit 3, 2;
-
-
 
 Exo2:
 
@@ -124,8 +122,39 @@ Exo2:
 
 		select arme.idArme, arme.nom as Nom, personnage.nom as Personnage from personnage right join dispose on personnage.idpersonnage=dispose.idPersonnage right join arme on dispose.idArme=arme.idArme order by idArme;
 
-
 Exo3:
+	1)	
+		select libelle, count(arme.idTypeArme) from arme inner join typearme on arme.idTypeArme=typearme.idTypeArme group by libelle;
+
+		SET sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));
+		select classe.nom, description, count(personnage.idClasse) from personnage inner join classe on personnage.idClasse=classe.idClasse group by classe.nom;
+
+		select nom, count(dispose.idPersonnage) from personnage inner join dispose on personnage.idPersonnage=dispose.idPersonnage group by nom;
+
+		select classe.nom, personnage.nom, count(dispose.idPersonnage) from personnage inner join dispose on personnage.idPersonnage=dispose.idPersonnage inner join classe on personnage.idClasse=classe.idClasse where classe.nom like "Guerrier" group by personnage.nom;
+
+		select nom, count(idPersonnage) from arme inner join dispose on arme.idArme=dispose.idArme group by nom;
+
+		select classe.nom as Classe, avg(level) as "Niveau moyen" from personnage inner join classe on personnage.idClasse=classe.idClasse group by classe.nom;
+
+	2)
+		select classe.nom as Classe, avg(level) as "Niveau moyen" from personnage inner join classe on personnage.idClasse=classe.idClasse group by classe.nom having avg(level)>9;
+
+		select nom, count(idPersonnage) from arme inner join dispose on arme.idArme=dispose.idArme group by nom having count(idPersonnage) between 1 and 2 order by count(idPersonnage) desc;
+
+		select libelle, count(arme.idTypeArme) from arme right join typearme on arme.idTypeArme=typearme.idTypeArme where estDistance=0 group by libelle having count(arme.idTypeArme)<=1;
+
+Exo4:
+	1)
+		select nom, degat from arme where degat>(select avg(degat) from arme);
+
+		select * from personnage where level<(select avg(level) from personnage);
+
+		select * from personnage where level>(select avg(level) from personnage inner join classe on personnage.idClasse=classe.idClasse where classe.nom like "Archer");
+
+		select max(nb) as max from (select libelle, count(arme.idTypeArme) as nb from arme inner join typearme on arme.idTypeArme=typearme.idTypeArme where estDistance=1 group by libelle) as c;
+
+Exo5:
 
 	1)
 		CREATE TABLE attaque(
@@ -166,7 +195,7 @@ Exo3:
 
 		update attaque set basedegat=50 where idAttaque=2 or idAttaque=3;
 
-		alter table personnage add dateNaissance varchar(10); 
+		alter table personnage add dateNaissance date; 
 
 		update personnage set dateNaissance="2001-01-01" where idPersonnage=1;
 
@@ -184,11 +213,17 @@ Exo3:
 
 		update personnage set dateNaissance="2003-05-01" where idPersonnage=7; 
 
+Exo6:
+	1)
+		select * from personnage where year(dateNaissance)>=2002;
 
+		select nom, year(dateNaissance) from personnage;
 
+		select nom, date_format(from_days(datediff(now(),dateNaissance)), "%Y")+0 as AGE from personnage;
 
+		select avg(ages) from (select date_format(from_days(datediff(now(),dateNaissance)), "%Y")+0 as ages from personnage) as c;
 
-
+		select nom, date_format(from_days(datediff(now(),dateNaissance)), "%Y")+0 as AGE from personnage where (date_format(from_days(datediff(now(),dateNaissance)), "%Y")+0)>=15;
 
 
 
